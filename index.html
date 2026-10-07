@@ -1,0 +1,1821 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>EternalBliss - Digital Wedding Planner</title>
+  <meta name="description" content="Aplikasi Digital Wedding Planner Standalone & PWA Mewah Champagne Blush & Gold untuk calon mempelai.">
+  <meta name="theme-color" content="#5A3E36">
+  
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="assets/app-icon.png">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            blush: {
+              50: '#FDF6F0',
+              100: '#FAF0E8',
+              200: '#F5DDD5',
+              300: '#E8C5C8',
+              400: '#D29D9D',
+              500: '#B97B74',
+            },
+            rosewood: {
+              500: '#874E4A',
+              600: '#7D5F56',
+              700: '#5A3E36',
+              800: '#3E2723',
+              900: '#2A1815',
+            },
+            gold: {
+              300: '#E6CA65',
+              400: '#DFB967',
+              500: '#C5A059',
+              600: '#9F7E38',
+            }
+          },
+          fontFamily: {
+            serif: ['Playfair Display', 'Georgia', 'serif'],
+            sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-[#FDF6F0] text-[#5A3E36] antialiased selection:bg-[#E8C5C8] selection:text-[#3E2723]">
+
+  <header class="no-print hidden md:flex items-center justify-between px-8 py-3.5 bg-white/85 backdrop-blur-md border-b border-[#F1DFDA] sticky top-0 z-40">
+    <div class="flex items-center gap-3">
+      <img src="assets/app-icon.png" alt="EternalBliss" class="w-9 h-9 rounded-xl shadow-sm object-cover">
+      <div>
+        <span class="font-serif font-bold text-lg text-[#3E2723] tracking-wide">EternalBliss</span>
+        <span class="text-[10px] tracking-widest uppercase text-[#C5A059] block -mt-1 font-semibold">Digital Wedding Planner</span>
+      </div>
+    </div>
+
+    <div id="mobile-mode-indicator" class="flex items-center gap-2 px-3.5 py-1.5 bg-[#FAF0E8] rounded-full border border-[#E8C5C8] text-xs text-[#5A3E36] font-semibold">
+      <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+      <span>📱 Simulasi Layar HP (Menu Berada di Bawah Frame)</span>
+    </div>
+
+    <nav id="desktop-menu-links" class="flex items-center gap-1 text-xs font-semibold text-[#7D5F56]">
+      <a href="#home" class="tab-link px-3.5 py-1.5 rounded-full hover:bg-[#FAF0E8] transition-colors" data-tab="home">Beranda</a>
+      <a href="#budget" class="tab-link px-3.5 py-1.5 rounded-full hover:bg-[#FAF0E8] transition-colors" data-tab="budget">Kalkulator Anggaran</a>
+      <a href="#timeline" class="tab-link px-3.5 py-1.5 rounded-full hover:bg-[#FAF0E8] transition-colors" data-tab="timeline">Checklist Tugas</a>
+      <a href="#vendor" class="tab-link px-3.5 py-1.5 rounded-full hover:bg-[#FAF0E8] transition-colors" data-tab="vendor">Vendor & Penawaran</a>
+      <a href="#guests" class="tab-link px-3.5 py-1.5 rounded-full hover:bg-[#FAF0E8] transition-colors" data-tab="guests">Tamu & RSVP</a>
+      <a href="#seserahan" class="tab-link px-3.5 py-1.5 rounded-full hover:bg-[#FAF0E8] transition-colors" data-tab="seserahan">Seserahan & Hantaran</a>
+      <a href="#rundown" class="tab-link px-3.5 py-1.5 rounded-full hover:bg-[#FAF0E8] transition-colors" data-tab="rundown">Rundown Hari-H</a>
+      <a href="#backup" class="tab-link px-3.5 py-1.5 rounded-full hover:bg-[#FAF0E8] transition-colors" data-tab="backup">Ekspor & Cetak</a>
+    </nav>
+
+    <div class="flex items-center gap-2.5">
+      <button id="btn-toggle-view" class="px-3.5 py-1.5 rounded-xl border border-[#C5A059] text-xs font-semibold text-[#5A3E36] hover:bg-[#FAF0E8] transition-colors flex items-center gap-1.5">
+        <i data-lucide="monitor" class="w-4 h-4 text-[#C5A059]"></i> Buka Layar Penuh Desktop
+      </button>
+      <button onclick="triggerPrint('all')" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#DFB967] to-[#C5A059] text-white text-xs font-semibold shadow-gold hover:opacity-90 transition-opacity flex items-center gap-1.5">
+        <i data-lucide="printer" class="w-4 h-4"></i> Cetak Laporan
+      </button>
+    </div>
+  </header>
+
+  <main class="app-container pb-28 pt-1">
+
+    <div class="status-bar no-print">
+      <span class="text-xs font-semibold">9:41</span>
+      <div class="flex items-center gap-1.5">
+        <i data-lucide="signal" class="w-3.5 h-3.5"></i>
+        <i data-lucide="wifi" class="w-3.5 h-3.5"></i>
+        <i data-lucide="battery" class="w-4 h-4"></i>
+      </div>
+    </div>
+
+    <div class="no-print px-5 py-3 flex items-center justify-between">
+      <div class="w-8">
+        <button onclick="switchTab('more')" class="p-2 text-[#5A3E36] hover:bg-[#FAF0E8] rounded-full transition-colors md:hidden" title="Menu Lengkap">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <div class="text-center">
+        <div class="flex items-center justify-center gap-1 text-[#874E4A] mb-0.5">
+          <i data-lucide="heart" class="w-4 h-4 fill-[#E8C5C8] text-[#874E4A]"></i>
+        </div>
+        <h1 class="font-serif font-bold text-xl text-[#3E2723] tracking-wider">EternalBliss</h1>
+        <p class="text-[9px] uppercase tracking-[0.25em] text-[#C5A059] font-bold">WEDDING PLANNER</p>
+      </div>
+      <div class="w-8 flex justify-end">
+        <button onclick="openEditProfileModal()" class="relative p-2 text-[#5A3E36] hover:bg-[#FAF0E8] rounded-full transition-colors" title="Pengaturan Profil">
+          <i data-lucide="bell" class="w-5 h-5"></i>
+          <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#C5A059] ring-2 ring-white"></span>
+        </button>
+      </div>
+    </div>
+
+    <div id="pwa-install-banner" class="no-print mx-5 mb-3 p-3 rounded-2xl bg-gradient-to-r from-[#FAF0E8] to-[#FFF9F5] border border-[#F1DFDA] flex items-center justify-between text-xs shadow-sm">
+      <div class="flex items-center gap-2.5">
+        <img src="assets/app-icon.png" class="w-7 h-7 rounded-lg object-cover">
+        <div>
+          <span class="font-bold text-[#3E2723] block leading-tight">Install EternalBliss</span>
+          <span class="text-[10px] text-[#7D5F56]">Akses offline cepat via Home Screen</span>
+        </div>
+      </div>
+      <button onclick="showPwaInstallGuide()" class="px-3 py-1 rounded-xl bg-[#874E4A] text-white font-semibold text-[11px] shadow-sm hover:bg-[#723F3C]">
+        Pasang
+      </button>
+    </div>
+
+    <section id="view-home" class="tab-view active px-5 space-y-5">
+      
+      <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#FFFDFB] to-[#F9ECE7] p-5 border border-[#F1DFDA] shadow-subtle">
+        <div class="flex items-center justify-between">
+          <div class="space-y-1 pr-2">
+            <h2 id="dash-couple-greeting" class="font-serif text-2xl font-bold text-[#3E2723] leading-tight">Hi, Sarah & Rizky</h2>
+            <p class="text-xs text-[#7D5F56] font-medium flex items-center gap-1">
+              Menuju hari bahagia kita <span class="text-[#B97B74]">❤️</span>
+            </p>
+            <p id="dash-venue-text" class="text-[11px] text-[#A4645F] font-semibold pt-1">
+              28 November 2026 • Glass House Ballroom, Plataran
+            </p>
+          </div>
+
+          <div class="relative flex-shrink-0 cursor-pointer" onclick="openEditProfileModal()" title="Edit Profil Pernikahan">
+            <div class="w-20 h-20 rounded-full p-1 bg-gradient-to-tr from-[#C5A059] via-[#FAF0E8] to-[#DFB967] shadow-gold">
+              <img id="dash-couple-avatar" src="assets/wedding_rings.jpg" alt="Wedding Rings" class="w-full h-full object-cover rounded-full">
+            </div>
+            <div class="absolute bottom-0 right-0 p-1.5 bg-white text-[#5A3E36] rounded-full shadow-md border border-[#F1DFDA]">
+              <i data-lucide="camera" class="w-3 h-3 text-[#874E4A]"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="absolute -right-6 -bottom-6 w-24 h-24 rounded-full bg-[#E8C5C8]/20 blur-xl pointer-events-none"></div>
+      </div>
+
+      <div onclick="triggerRosePetals()" class="cursor-pointer relative overflow-hidden rounded-3xl bg-gradient-terracotta text-white p-5 shadow-rose hover:opacity-95 transition-all" title="Ketuk untuk Efek Hujan Kelopak Mawar & Emas 🌸">
+        <div class="flex items-center justify-between mb-3 text-white/90">
+          <span class="text-[10px] uppercase font-bold tracking-[0.2em]" id="countdown-tag">WEDDING COUNTDOWN</span>
+          <span class="text-[10px] bg-white/20 hover:bg-white/30 text-white px-2.5 py-0.5 rounded-full flex items-center gap-1 font-semibold backdrop-blur-sm">
+            <i data-lucide="sparkles" class="w-3 h-3 text-amber-200"></i> Hujan Mawar
+          </span>
+        </div>
+
+        <div class="grid grid-cols-4 items-center text-center gap-2">
+          
+          <div class="flex flex-col items-center justify-center p-2 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30">
+            <span id="countdown-days" class="font-serif text-2xl font-bold leading-none">182</span>
+            <span class="text-[10px] tracking-wider font-medium text-white/80 mt-1">Hari</span>
+          </div>
+          
+          <div class="flex flex-col items-center justify-center p-2">
+            <span id="countdown-hours" class="font-serif text-2xl font-bold leading-none">14</span>
+            <span class="text-[10px] tracking-wider font-medium text-white/80 mt-1">Jam</span>
+          </div>
+          
+          <div class="flex flex-col items-center justify-center p-2">
+            <span id="countdown-minutes" class="font-serif text-2xl font-bold leading-none">26</span>
+            <span class="text-[10px] tracking-wider font-medium text-white/80 mt-1">Menit</span>
+          </div>
+          
+          <div class="flex flex-col items-center justify-center p-2">
+            <span id="countdown-seconds" class="font-serif text-2xl font-bold leading-none">45</span>
+            <span class="text-[10px] tracking-wider font-medium text-white/80 mt-1">Detik</span>
+          </div>
+        </div>
+
+        <svg class="absolute right-0 bottom-0 w-32 h-32 opacity-15 pointer-events-none text-white" viewBox="0 0 100 100" fill="currentColor">
+          <path d="M50 0 C60 30 70 40 100 50 C70 60 60 70 50 100 C40 70 30 60 0 50 C30 40 40 30 50 0 Z"/>
+        </svg>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3.5">
+        
+        <div onclick="switchTab('timeline')" class="cursor-pointer glass-card rounded-3xl p-4 shadow-subtle hover:border-[#C5A059] transition-all flex flex-col justify-between">
+          <div class="flex items-center justify-between text-[#3E2723] mb-2">
+            <div class="flex items-center gap-1.5">
+              <i data-lucide="check-square" class="w-4 h-4 text-[#874E4A]"></i>
+              <span class="text-xs font-semibold">Checkout Tugas</span>
+            </div>
+            <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-[#9C8178]"></i>
+          </div>
+
+          <div class="my-3 flex flex-col items-center justify-center">
+            <div class="relative w-20 h-20 flex items-center justify-center">
+              <svg class="w-20 h-20 -rotate-90 transform" viewBox="0 0 80 80">
+                <circle cx="40" cy="40" r="34" stroke-width="7" class="circle-progress-bg fill-none" />
+                <circle id="dash-circle-progress" cx="40" cy="40" r="34" stroke-width="7" stroke-dasharray="213.6" stroke-dashoffset="53.4" class="circle-progress-bar fill-none" />
+              </svg>
+              <span id="dash-task-percent" class="absolute font-serif text-lg font-bold text-[#3E2723]">75%</span>
+            </div>
+          </div>
+
+          <p id="dash-task-count" class="text-[11px] text-[#7D5F56] text-center font-medium">12 dari 16 tugas selesai</p>
+        </div>
+
+        <div onclick="switchTab('budget')" class="cursor-pointer glass-card rounded-3xl p-4 shadow-subtle hover:border-[#C5A059] transition-all flex flex-col justify-between">
+          <div class="flex items-center justify-between text-[#3E2723] mb-2">
+            <div class="flex items-center gap-1.5">
+              <i data-lucide="wallet" class="w-4 h-4 text-[#874E4A]"></i>
+              <span class="text-xs font-semibold">Budget Tracker</span>
+            </div>
+            <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-[#9C8178]"></i>
+          </div>
+
+          <div class="my-2 space-y-1">
+            <span class="text-[11px] text-[#7D5F56] block">Sisa Anggaran</span>
+            <div id="dash-remaining-budget" class="font-serif text-lg font-bold text-[#3E2723] truncate">
+              Rp 45.000.000
+            </div>
+            
+            <div class="w-full bg-[#FAF0E8] h-2 rounded-full overflow-hidden mt-2">
+              <div id="dash-budget-bar" class="h-full bg-gradient-to-r from-amber-600 to-[#874E4A] rounded-full" style="width: 70%"></div>
+            </div>
+          </div>
+
+          <div class="pt-1">
+            <span class="text-[10px] text-[#9C8178] block">Total Budget</span>
+            <span id="dash-total-budget" class="text-xs font-semibold text-[#5A3E36]">Rp 150.000.000</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="glass-card rounded-3xl p-4 shadow-subtle border border-[#F1DFDA]">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-2">
+            <i data-lucide="users" class="w-4 h-4 text-[#C5A059]"></i>
+            <h3 class="text-xs font-bold text-[#3E2723] uppercase tracking-wider">Status RSVP & Tamu</h3>
+          </div>
+          <button onclick="switchTab('guests')" class="text-[11px] font-semibold text-[#874E4A] hover:underline flex items-center gap-0.5">
+            Daftar Tamu <i data-lucide="chevron-right" class="w-3 h-3"></i>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 text-center mb-3">
+          <div class="p-2.5 rounded-2xl bg-[#EBF7EE] border border-[#D1EED7]">
+            <span class="text-[10px] text-[#237A3B] font-semibold block">Hadir</span>
+            <span id="dash-rsvp-confirmed" class="font-serif font-bold text-base text-[#237A3B]">24 Pax</span>
+          </div>
+          <div class="p-2.5 rounded-2xl bg-[#FEF7EA] border border-[#FCE4B8]">
+            <span class="text-[10px] text-[#B57900] font-semibold block">Ragu-ragu</span>
+            <span id="dash-rsvp-doubt" class="font-serif font-bold text-base text-[#B57900]">2 Pax</span>
+          </div>
+          <div class="p-2.5 rounded-2xl bg-[#FAF0E8] border border-[#F1DFDA]">
+            <span class="text-[10px] text-[#7D5F56] font-semibold block">Belum Respons</span>
+            <span id="dash-rsvp-pending" class="font-serif font-bold text-base text-[#7D5F56]">3 Pax</span>
+          </div>
+        </div>
+
+        <div class="bg-[#FAF2EC] p-3 rounded-2xl flex items-center justify-between text-xs">
+          <div class="flex items-center gap-2">
+            <i data-lucide="utensils" class="w-4 h-4 text-[#874E4A]"></i>
+            <span class="text-[#5A3E36] font-medium">Estimasi Katering:</span>
+          </div>
+          <span id="dash-catering-portion" class="font-bold text-[#874E4A]">30 Porsi (Buffer 25%)</span>
+        </div>
+      </div>
+
+      <div onclick="switchTab('seserahan')" class="cursor-pointer glass-card rounded-3xl p-4 shadow-subtle border border-[#F1DFDA] hover:border-[#C5A059] transition-all">
+        <div class="flex items-center justify-between mb-2.5">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-xl bg-[#FAF0E8] flex items-center justify-center text-[#874E4A]">
+              <i data-lucide="gift" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <h3 class="text-xs font-bold text-[#3E2723] uppercase tracking-wider">Kotak Seserahan & Hantaran</h3>
+              <p class="text-[10px] text-[#7D5F56]">Progress hiasan & belanja bawaan pengantin</p>
+            </div>
+          </div>
+          <span class="text-xs font-semibold text-[#874E4A] flex items-center gap-0.5">
+            Kelola <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+          </span>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 text-center my-2.5">
+          <div class="p-2.5 rounded-2xl bg-[#FAF2EC] border border-[#F1DFDA]">
+            <span class="text-[10px] text-[#7D5F56] font-semibold block">Total Kotak</span>
+            <span id="dash-seserahan-total" class="font-serif font-bold text-base text-[#3E2723]">8 Kotak</span>
+          </div>
+          <div class="p-2.5 rounded-2xl bg-[#EBF7EE] border border-[#D1EED7]">
+            <span class="text-[10px] text-[#237A3B] font-semibold block">Siap Serah</span>
+            <span id="dash-seserahan-ready" class="font-serif font-bold text-base text-[#237A3B]">6 Kotak</span>
+          </div>
+          <div class="p-2.5 rounded-2xl bg-[#FEF7EA] border border-[#FCE4B8]">
+            <span class="text-[10px] text-[#B57900] font-semibold block">Proses Hias</span>
+            <span id="dash-seserahan-progress" class="font-serif font-bold text-base text-[#B57900]">2 Kotak</span>
+          </div>
+        </div>
+
+        <div class="w-full bg-[#FAF0E8] h-1.5 rounded-full overflow-hidden mt-1">
+          <div id="dash-seserahan-bar" class="h-full bg-gradient-to-r from-[#DFB967] to-[#C5A059] rounded-full transition-all duration-500" style="width: 75%"></div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-4 gap-2">
+        <button onclick="switchTab('seserahan')" class="p-2.5 rounded-2xl bg-[#FAF0E8] hover:bg-[#E8C5C8]/50 border border-[#F1DFDA] flex flex-col items-center justify-center text-center transition-all">
+          <i data-lucide="gift" class="w-4 h-4 text-[#874E4A] mb-1"></i>
+          <span class="text-[10px] font-semibold text-[#5A3E36]">Seserahan</span>
+        </button>
+        <button onclick="switchTab('rundown')" class="p-2.5 rounded-2xl bg-[#FAF0E8] hover:bg-[#E8C5C8]/50 border border-[#F1DFDA] flex flex-col items-center justify-center text-center transition-all">
+          <i data-lucide="clock" class="w-4 h-4 text-[#874E4A] mb-1"></i>
+          <span class="text-[10px] font-semibold text-[#5A3E36]">Rundown</span>
+        </button>
+        <button onclick="switchTab('backup')" class="p-2.5 rounded-2xl bg-[#FAF0E8] hover:bg-[#E8C5C8]/50 border border-[#F1DFDA] flex flex-col items-center justify-center text-center transition-all">
+          <i data-lucide="printer" class="w-4 h-4 text-[#C5A059] mb-1"></i>
+          <span class="text-[10px] font-semibold text-[#5A3E36]">Cetak</span>
+        </button>
+        <button onclick="store.exportJson()" class="p-2.5 rounded-2xl bg-[#FAF0E8] hover:bg-[#E8C5C8]/50 border border-[#F1DFDA] flex flex-col items-center justify-center text-center transition-all">
+          <i data-lucide="download-cloud" class="w-4 h-4 text-[#874E4A] mb-1"></i>
+          <span class="text-[10px] font-semibold text-[#5A3E36]">Backup</span>
+        </button>
+      </div>
+
+      <div class="space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-1.5 text-[#3E2723]">
+            <i data-lucide="receipt" class="w-4 h-4 text-[#874E4A]"></i>
+            <h3 class="font-serif font-bold text-base">Rincian Pengeluaran</h3>
+          </div>
+          <button onclick="switchTab('budget')" class="text-xs font-semibold text-[#874E4A] hover:underline flex items-center gap-0.5">
+            Lihat Semua <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+
+        <div id="dash-expense-list" class="space-y-2.5">
+          
+        </div>
+      </div>
+
+    </section>
+
+    <section id="view-budget" class="tab-view px-5 space-y-5">
+      
+      <div class="flex items-center justify-between">
+        <div>
+          <span class="text-[10px] font-bold tracking-widest uppercase text-[#C5A059]">Keuangan & Biaya</span>
+          <h2 class="font-serif font-bold text-2xl text-[#3E2723]">Budget Tracker</h2>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <button onclick="openCateringCalculatorModal()" class="px-3 py-2 rounded-2xl bg-[#FAF0E8] border border-[#C5A059] text-[#5A3E36] text-xs font-semibold hover:bg-[#E8C5C8]/40 transition-all flex items-center gap-1 shadow-sm" title="Kalkulator Porsi Prasmanan & Gubukan">
+            <i data-lucide="utensils" class="w-3.5 h-3.5 text-[#874E4A]"></i> Katering RI
+          </button>
+          <button onclick="openAddExpenseModal()" class="px-3 py-2 rounded-2xl bg-[#874E4A] text-white text-xs font-semibold shadow-rose hover:bg-[#723F3C] transition-all flex items-center gap-1">
+            <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i> Tambah Item
+          </button>
+        </div>
+      </div>
+
+      <div id="overbudget-banner" class="hidden p-4 rounded-2xl bg-red-50 border border-red-200 text-red-800 space-y-1 shadow-sm">
+        <div class="flex items-center gap-2 font-bold text-sm text-red-700">
+          <i data-lucide="alert-triangle" class="w-5 h-5 text-red-600 flex-shrink-0"></i>
+          <span>Peringatan: Anggaran Melebihi Batas (Overbudget)!</span>
+        </div>
+        <p class="text-xs text-red-600">
+          Pengeluaran riil melebihi anggaran maksimal sebesar <strong id="overbudget-amount" class="underline">Rp 0</strong>. Pertimbangkan efisiensi pos pengeluaran lainnya.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div class="glass-card rounded-2xl p-3.5 border border-[#F1DFDA]">
+          <span class="text-[10px] uppercase font-bold text-[#7D5F56] block">Anggaran Maksimal</span>
+          <span id="budget-total-max" class="font-serif font-bold text-base text-[#3E2723] block mt-0.5">Rp 150.000.000</span>
+          <button onclick="openEditProfileModal()" class="text-[10px] text-[#C5A059] font-semibold hover:underline mt-1 block">Ubah Plafon</button>
+        </div>
+
+        <div class="glass-card rounded-2xl p-3.5 border border-[#F1DFDA]">
+          <span class="text-[10px] uppercase font-bold text-[#7D5F56] block">Sisa Anggaran</span>
+          <span id="budget-remaining" class="font-serif font-bold text-base text-[#237A3B] block mt-0.5">Rp 45.000.000</span>
+          <span class="text-[10px] text-[#7D5F56] mt-1 block">Sisa Plafon</span>
+        </div>
+
+        <div class="glass-card rounded-2xl p-3.5 border border-[#F1DFDA]">
+          <span class="text-[10px] uppercase font-bold text-[#7D5F56] block">Total Biaya Riil</span>
+          <span id="budget-total-real" class="font-serif font-bold text-base text-[#874E4A] block mt-0.5">Rp 105.000.000</span>
+          <span class="text-[10px] text-[#7D5F56] mt-1 block">Estimasi: <span id="budget-total-est">Rp 100jt</span></span>
+        </div>
+
+        <div class="glass-card rounded-2xl p-3.5 border border-[#F1DFDA]">
+          <span class="text-[10px] uppercase font-bold text-[#7D5F56] block">Sisa Pelunasan</span>
+          <span id="budget-total-unpaid" class="font-serif font-bold text-base text-[#B57900] block mt-0.5">Rp 48.000.000</span>
+          <span class="text-[10px] text-[#2A6E3B] mt-1 block">DP: <span id="budget-total-dp">Rp 57jt</span></span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs">
+        <button class="btn-budget-cat px-3.5 py-1.5 rounded-full font-semibold bg-[#874E4A] text-white flex-shrink-0 transition-colors" data-cat="all">Semua Pos</button>
+        <button class="btn-budget-cat px-3.5 py-1.5 rounded-full font-semibold bg-[#FAF0E8] text-[#5A3E36] hover:bg-[#E8C5C8] flex-shrink-0 transition-colors" data-cat="vendor">Vendor Utama</button>
+        <button class="btn-budget-cat px-3.5 py-1.5 rounded-full font-semibold bg-[#FAF0E8] text-[#5A3E36] hover:bg-[#E8C5C8] flex-shrink-0 transition-colors" data-cat="bawaan">Barang Bawaan</button>
+        <button class="btn-budget-cat px-3.5 py-1.5 rounded-full font-semibold bg-[#FAF0E8] text-[#5A3E36] hover:bg-[#E8C5C8] flex-shrink-0 transition-colors" data-cat="operasional">Operasional & Lainnya</button>
+      </div>
+
+      <div class="hidden md:block overflow-hidden rounded-2xl border border-[#F1DFDA] glass-card">
+        <table class="w-full text-left border-collapse text-xs">
+          <thead>
+            <tr class="bg-[#FAF2EC] text-[#5A3E36] border-b border-[#F1DFDA] font-semibold">
+              <th class="py-3 px-3">Nama Pos & Kategori</th>
+              <th class="py-3 px-3">Estimasi</th>
+              <th class="py-3 px-3">Biaya Riil</th>
+              <th class="py-3 px-3">DP Bayar</th>
+              <th class="py-3 px-3">Sisa Pelunasan</th>
+              <th class="py-3 px-3">Status</th>
+              <th class="py-3 px-3 text-right">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="budget-table-body">
+            
+          </tbody>
+        </table>
+      </div>
+
+      <div id="budget-mobile-cards" class="md:hidden space-y-3">
+        
+      </div>
+
+    </section>
+
+    <section id="view-timeline" class="tab-view px-5 space-y-5">
+      
+      <div class="flex items-center justify-between">
+        <div>
+          <span class="text-[10px] font-bold tracking-widest uppercase text-[#C5A059]">Manajemen Waktu</span>
+          <h2 class="font-serif font-bold text-2xl text-[#3E2723]">Checklist Tugas</h2>
+        </div>
+        <button onclick="openAddTaskModal()" class="px-3.5 py-2 rounded-2xl bg-[#874E4A] text-white text-xs font-semibold shadow-rose hover:bg-[#723F3C] transition-all flex items-center gap-1.5">
+          <i data-lucide="plus" class="w-4 h-4"></i> Tambah Tugas
+        </button>
+      </div>
+
+      <div class="glass-card rounded-2xl p-4 shadow-subtle border border-[#F1DFDA] space-y-2">
+        <div class="flex items-center justify-between text-xs font-semibold text-[#5A3E36]">
+          <span>Progres Persiapan Keseluruhan</span>
+          <span id="timeline-summary-text" class="text-[#874E4A]">12 dari 21 tugas selesai (57%)</span>
+        </div>
+        <div class="w-full bg-[#FAF0E8] h-2.5 rounded-full overflow-hidden">
+          <div id="timeline-summary-bar" class="h-full bg-gradient-to-r from-[#DFB967] to-[#874E4A] rounded-full transition-all duration-500" style="width: 57%"></div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2 text-xs">
+        <div>
+          <label class="text-[10px] uppercase font-bold text-[#7D5F56] block mb-1">Filter Fase Waktu</label>
+          <select id="select-timeline-phase" class="w-full px-3 py-2 rounded-xl bg-white border border-[#E8C5C8] text-[#5A3E36] font-medium outline-none">
+            <option value="all">Semua Fase Waktu</option>
+            <option value="h12">H-12 Bulan</option>
+            <option value="h6">H-6 Bulan</option>
+            <option value="h3">H-3 Bulan</option>
+            <option value="h1m">H-1 Bulan</option>
+            <option value="h1w">H-1 Minggu</option>
+            <option value="h0">Hari H</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-[10px] uppercase font-bold text-[#7D5F56] block mb-1">Status Pengerjaan</label>
+          <select id="select-timeline-status" class="w-full px-3 py-2 rounded-xl bg-white border border-[#E8C5C8] text-[#5A3E36] font-medium outline-none">
+            <option value="all">Semua Status</option>
+            <option value="pending">Belum Selesai</option>
+            <option value="done">Sudah Selesai</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="timeline-tasks-container">
+        
+      </div>
+
+    </section>
+
+    <section id="view-vendor" class="tab-view px-5 space-y-5">
+      
+      <div class="flex items-center justify-between">
+        <div>
+          <span class="text-[10px] font-bold tracking-widest uppercase text-[#C5A059]">Partner Profesional</span>
+          <h2 class="font-serif font-bold text-2xl text-[#3E2723]">Manajemen Vendor</h2>
+        </div>
+        <button onclick="openAddVendorModal()" class="px-3.5 py-2 rounded-2xl bg-[#874E4A] text-white text-xs font-semibold shadow-rose hover:bg-[#723F3C] transition-all flex items-center gap-1.5">
+          <i data-lucide="plus" class="w-4 h-4"></i> Tambah Vendor
+        </button>
+      </div>
+
+      <div id="vendor-list-container" class="space-y-3">
+        
+      </div>
+
+      <div class="pt-4 border-t border-[#F1DFDA] space-y-3">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="font-serif font-bold text-base text-[#3E2723]">Minta Penawaran & Komparasi Harga</h3>
+            <p class="text-xs text-[#7D5F56]">Bandingkan opsi kandidat vendor sebelum mengambil keputusan.</p>
+          </div>
+        </div>
+
+        <div id="vendor-rfq-comparison" class="space-y-3">
+          
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-[#FAF0E8] border border-[#E8C5C8] flex items-center justify-between text-xs">
+          <div>
+            <span class="font-bold text-[#3E2723] block">Format Chat Penawaran Vendor</span>
+            <span class="text-[11px] text-[#7D5F56]">Salin pesan formal siap kirim via WhatsApp</span>
+          </div>
+          <button onclick="copyVendorRfqTemplate()" class="px-3 py-1.5 rounded-xl bg-[#25D366] text-white font-semibold hover:bg-[#20BD5A] transition-colors flex items-center gap-1">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i> Salin Pesan
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+    <section id="view-guests" class="tab-view px-5 space-y-4">
+      
+      <div class="flex items-center justify-between">
+        <div>
+          <span class="text-[10px] font-bold tracking-widest uppercase text-[#C5A059]">Undangan & Kehadiran</span>
+          <h2 class="font-serif font-bold text-2xl text-[#3E2723]">Daftar Tamu & RSVP</h2>
+        </div>
+        <button onclick="openAddGuestModal()" class="px-3.5 py-2 rounded-2xl bg-[#874E4A] text-white text-xs font-semibold shadow-rose hover:bg-[#723F3C] transition-all flex items-center gap-1.5">
+          <i data-lucide="user-plus" class="w-4 h-4"></i> Tambah Tamu
+        </button>
+      </div>
+
+      <div class="grid grid-cols-3 gap-2 text-center text-xs">
+        <div class="glass-card rounded-2xl p-3 border border-[#F1DFDA]">
+          <span class="text-[10px] uppercase font-bold text-[#7D5F56] block">Total Undangan</span>
+          <span id="guest-total-count" class="font-serif font-bold text-sm text-[#3E2723] block mt-0.5">14 (28 Pax)</span>
+        </div>
+        <div class="glass-card rounded-2xl p-3 border border-[#F1DFDA]">
+          <span class="text-[10px] uppercase font-bold text-[#237A3B] block">Konfirmasi Hadir</span>
+          <span id="guest-confirmed-pax" class="font-serif font-bold text-sm text-[#237A3B] block mt-0.5">22 Pax</span>
+        </div>
+        <div class="glass-card rounded-2xl p-3 border border-[#F1DFDA] cursor-pointer hover:border-[#C5A059] transition-all" onclick="openCateringCalculatorModal()" title="Buka Kalkulator Katering">
+          <span class="text-[10px] uppercase font-bold text-[#874E4A] block">Porsi Katering 💡</span>
+          <span id="guest-catering-calc" class="font-serif font-bold text-sm text-[#874E4A] block mt-0.5">28 Porsi</span>
+        </div>
+      </div>
+
+      <div class="flex items-center p-1 bg-[#FAF0E8] rounded-2xl border border-[#F1DFDA] text-xs font-semibold">
+        <button id="btn-subtab-guest-list" onclick="switchGuestSubtab('list')" class="flex-1 py-1.5 rounded-xl bg-white text-[#874E4A] shadow-sm transition-all flex items-center justify-center gap-1.5">
+          <i data-lucide="list" class="w-3.5 h-3.5"></i> Daftar Tamu
+        </button>
+        <button id="btn-subtab-guest-seating" onclick="switchGuestSubtab('seating')" class="flex-1 py-1.5 rounded-xl text-[#7D5F56] hover:text-[#874E4A] transition-all flex items-center justify-center gap-1.5">
+          <i data-lucide="layout-grid" class="w-3.5 h-3.5"></i> Denah Meja Bulat (Seating Chart)
+        </button>
+      </div>
+
+      <div id="container-guest-list" class="space-y-3">
+        
+        <div class="space-y-2">
+          <div class="relative">
+            <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-3 text-[#9C8178]"></i>
+            <input 
+              type="text" 
+              id="input-guest-search" 
+              placeholder="Cari nama tamu atau nomor meja..." 
+              class="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-white border border-[#E8C5C8] text-xs text-[#3E2723] outline-none focus:border-[#C5A059]"
+            >
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <select id="select-guest-category" class="w-full px-3 py-2 rounded-xl bg-white border border-[#E8C5C8] text-[#5A3E36] font-medium outline-none">
+              <option value="all">Semua Kategori</option>
+              <option value="VIP">VIP</option>
+              <option value="Keluarga">Keluarga</option>
+              <option value="Sahabat">Sahabat</option>
+              <option value="Teman Kantor">Teman Kantor</option>
+            </select>
+
+            <select id="select-guest-rsvp" class="w-full px-3 py-2 rounded-xl bg-white border border-[#E8C5C8] text-[#5A3E36] font-medium outline-none">
+              <option value="all">Semua Status RSVP</option>
+              <option value="Hadir">Hadir</option>
+              <option value="Ragu-ragu">Ragu-ragu</option>
+              <option value="Belum Konfirmasi">Belum Konfirmasi</option>
+              <option value="Berhalangan">Berhalangan</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="guest-list-container" class="space-y-2.5">
+          
+        </div>
+      </div>
+
+      <div id="container-guest-seating" class="hidden space-y-3">
+        <div class="glass-card rounded-2xl p-3 border border-[#F1DFDA] flex items-center justify-between text-xs">
+          <div class="flex items-center gap-2">
+            <i data-lucide="info" class="w-4 h-4 text-[#C5A059]"></i>
+            <span class="text-[#5A3E36]">Ketuk salah satu meja bundar untuk melihat detail tamu & alokasi kursi.</span>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-center gap-4 text-[11px] text-[#7D5F56] py-1">
+          <div class="flex items-center gap-1.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#874E4A] ring-2 ring-[#E8C5C8]"></span>
+            <span>Kursi Terisi</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-white border border-dashed border-[#C4A59D]"></span>
+            <span>Kursi Kosong</span>
+          </div>
+        </div>
+
+        <div id="seating-tables-grid" class="grid grid-cols-2 gap-3.5">
+          
+        </div>
+      </div>
+
+    </section>
+
+    <section id="view-seserahan" class="tab-view px-5 space-y-4">
+      
+      <div class="flex items-center justify-between">
+        <div>
+          <span class="text-[10px] font-bold tracking-widest uppercase text-[#C5A059]">Adat & Tradisi Pernikahan</span>
+          <h2 class="font-serif font-bold text-2xl text-[#3E2723]">Seserahan & Hantaran</h2>
+          <p class="text-xs text-[#7D5F56] mt-0.5">Kelola isi kotak, anggaran belanja, status hias & PIC pembawa.</p>
+        </div>
+        <button onclick="openAddSeserahanModal()" class="px-3.5 py-2 rounded-2xl bg-[#874E4A] text-white text-xs font-semibold shadow-rose hover:bg-[#723F3C] transition-all flex items-center gap-1.5 flex-shrink-0">
+          <i data-lucide="plus" class="w-4 h-4"></i> Tambah Kotak
+        </button>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        
+        <div class="glass-card rounded-3xl p-3.5 shadow-subtle border border-[#F1DFDA] space-y-1">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-bold uppercase text-[#7D5F56] tracking-wider">Total Kotak</span>
+            <span id="ses-kpi-ready" class="text-[10px] font-bold text-[#1E6B37] bg-[#EBF7EE] px-2 py-0.5 rounded-full border border-[#B7E4C4]">6 Siap (75%)</span>
+          </div>
+          <span id="ses-kpi-total" class="font-serif font-bold text-xl text-[#3E2723] block leading-tight">8 Kotak</span>
+          
+          <div class="w-full bg-[#FAF0E8] h-1.5 rounded-full overflow-hidden mt-2">
+            <div id="ses-kpi-progress-bar" class="h-full bg-gradient-to-r from-[#DFB967] to-[#C5A059] rounded-full transition-all duration-500" style="width: 75%"></div>
+          </div>
+        </div>
+
+        <div class="glass-card rounded-3xl p-3.5 shadow-subtle border border-[#F1DFDA] space-y-1">
+          <span class="text-[10px] font-bold uppercase text-[#7D5F56] tracking-wider block">Belanja Barang</span>
+          <span id="ses-kpi-actual" class="font-serif font-bold text-lg text-[#874E4A] block leading-tight">Rp 22.350.000</span>
+          <div class="flex items-center justify-between text-[10px] text-stone-500 pt-1">
+            <span>Plafon:</span>
+            <span id="ses-kpi-budget" class="font-semibold text-stone-700">Rp 22.800.000</span>
+          </div>
+        </div>
+
+        <div class="glass-card rounded-3xl p-3.5 shadow-subtle border border-[#F1DFDA] space-y-1">
+          <span class="text-[10px] font-bold uppercase text-[#A4645F] tracking-wider block">Jasa Hias Kotak</span>
+          <span id="ses-kpi-jasa" class="font-serif font-bold text-lg text-[#3E2723] block leading-tight">Rp 1.200.000</span>
+          <span class="text-[10px] text-stone-500 block">Akrilik, pita & bunga</span>
+        </div>
+
+        <div class="glass-card rounded-3xl p-3.5 shadow-subtle border border-[#C5A059] bg-gradient-to-br from-[#FAF0E8] to-[#FFF9F5] space-y-1">
+          <span class="text-[10px] font-bold uppercase text-[#C5A059] tracking-wider block">Total Pengeluaran</span>
+          <span id="ses-kpi-grand" class="font-serif font-bold text-lg text-[#3E2723] block leading-tight">Rp 23.550.000</span>
+          <span class="text-[10px] text-[#874E4A] font-semibold block">Barang + Hiasan</span>
+        </div>
+
+      </div>
+
+      <div class="grid grid-cols-2 gap-2">
+        <button onclick="syncSeserahanToBudget()" class="py-2.5 px-3 rounded-2xl bg-[#874E4A] text-white text-xs font-semibold shadow-rose hover:bg-[#723F3C] transition-all flex items-center justify-center gap-1.5" title="Sinkronkan total belanja seserahan ini ke tabel pos anggaran">
+          <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Sinkron ke Budget
+        </button>
+        <button onclick="triggerPrint('seserahan')" class="py-2.5 px-3 rounded-2xl bg-white border border-[#C5A059] text-[#5A3E36] hover:bg-[#FAF0E8] text-xs font-semibold transition-all flex items-center justify-center gap-1.5">
+          <i data-lucide="printer" class="w-3.5 h-3.5 text-[#C5A059]"></i> Cetak Daftar Kotak
+        </button>
+      </div>
+
+      <div class="space-y-2 bg-[#FAF4F0]/60 p-3 rounded-2xl border border-[#F1DFDA]">
+        <div class="flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-[#7D5F56]">
+          <i data-lucide="filter" class="w-3.5 h-3.5 text-[#C5A059]"></i> Filter Kotak:
+        </div>
+        <div class="grid grid-cols-3 gap-2 text-xs">
+          <div>
+            <select id="select-seserahan-recipient" class="w-full px-2 py-1.5 rounded-xl border border-[#E8C5C8] text-[#3E2723] font-medium outline-none text-[11px] bg-white">
+              <option value="all">Semua Penerima</option>
+              <option value="wanita">🌸 Untuk Wanita</option>
+              <option value="pria">👔 Balasan Pria</option>
+            </select>
+          </div>
+          <div>
+            <select id="select-seserahan-status" class="w-full px-2 py-1.5 rounded-xl border border-[#E8C5C8] text-[#3E2723] font-medium outline-none text-[11px] bg-white">
+              <option value="all">Semua Status</option>
+              <option value="siap">Siap Diserahkan</option>
+              <option value="sedang_dihias">Sedang Dihias</option>
+              <option value="sudah_dibeli">Sudah Dibeli</option>
+              <option value="belum_dibeli">Belum Dibeli</option>
+            </select>
+          </div>
+          <div>
+            <select id="select-seserahan-category" class="w-full px-2 py-1.5 rounded-xl border border-[#E8C5C8] text-[#3E2723] font-medium outline-none text-[11px] bg-white">
+              <option value="all">Semua Kategori</option>
+              <option value="Perlengkapan Ibadah">Ibadah</option>
+              <option value="Skincare & Kosmetik">Skincare/Makeup</option>
+              <option value="Busana & Kain Adat">Busana/Kain</option>
+              <option value="Tas & Sepatu">Tas & Sepatu</option>
+              <option value="Perhiasan & Emas">Perhiasan Emas</option>
+              <option value="Parfum & Body Care">Parfum/Body Care</option>
+              <option value="Kue Tradisional & Buah">Kue & Buah</option>
+              <option value="Seserahan Balasan Pria">Balasan Pria</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div id="seserahan-cards-container" class="space-y-3">
+        
+      </div>
+
+    </section>
+
+    <section id="view-rundown" class="tab-view px-5 space-y-5">
+      
+      <div class="flex items-center justify-between">
+        <div>
+          <span class="text-[10px] font-bold tracking-widest uppercase text-[#C5A059]">Jadwal Menit demi Menit</span>
+          <h2 class="font-serif font-bold text-2xl text-[#3E2723]">Rundown Hari-H</h2>
+        </div>
+        <button onclick="openAddRundownModal()" class="px-3.5 py-2 rounded-2xl bg-[#874E4A] text-white text-xs font-semibold shadow-rose hover:bg-[#723F3C] transition-all flex items-center gap-1.5">
+          <i data-lucide="plus" class="w-4 h-4"></i> Tambah Agenda
+        </button>
+      </div>
+
+      <div class="glass-card rounded-3xl p-4 shadow-subtle border border-[#F1DFDA] space-y-3">
+        <div class="flex items-center gap-2">
+          <i data-lucide="phone-forwarded" class="w-4 h-4 text-[#C5A059]"></i>
+          <h3 class="text-xs font-bold text-[#3E2723] uppercase tracking-wider">Kontak Penting & Darurat Hari-H</h3>
+        </div>
+        <div id="emergency-contacts-container" class="space-y-2">
+          
+        </div>
+      </div>
+
+      <div class="pt-2">
+        <h3 class="font-serif font-bold text-sm text-[#5A3E36] mb-3">Urutan Acara Hari Bahagia</h3>
+        <div id="rundown-list-container" class="space-y-1">
+          
+        </div>
+      </div>
+
+    </section>
+
+    <section id="view-backup" class="tab-view px-5 space-y-5">
+      
+      <div>
+        <span class="text-[10px] font-bold tracking-widest uppercase text-[#C5A059]">Sinkronisasi & Dokumentasi</span>
+        <h2 class="font-serif font-bold text-2xl text-[#3E2723]">Ekspor, Impor & Cetak</h2>
+        <p class="text-xs text-[#7D5F56] mt-1">Simpan cadangan data lokal atau cetak fisik dokumen pernikahan Anda.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+        
+        <div class="glass-card rounded-3xl p-5 shadow-subtle border border-[#F1DFDA] space-y-3 flex flex-col justify-between">
+          <div>
+            <div class="w-10 h-10 rounded-2xl bg-[#FAF0E8] flex items-center justify-center text-[#874E4A] mb-3">
+              <i data-lucide="download" class="w-5 h-5"></i>
+            </div>
+            <h3 class="font-serif font-bold text-base text-[#3E2723]">Unduh Cadangan (Backup JSON)</h3>
+            <p class="text-xs text-[#7D5F56] mt-1">
+              Simpan seluruh data (profil, anggaran, vendor, checklist, rundown) ke dalam satu file JSON di perangkat Anda.
+            </p>
+          </div>
+          <button onclick="store.exportJson()" class="w-full py-2.5 rounded-xl bg-[#874E4A] text-white text-xs font-semibold shadow-rose hover:bg-[#723F3C] transition-all flex items-center justify-center gap-2">
+            <i data-lucide="file-down" class="w-4 h-4"></i> Unduh File Backup
+          </button>
+        </div>
+
+        <div class="glass-card rounded-3xl p-5 shadow-subtle border border-[#F1DFDA] space-y-3 flex flex-col justify-between">
+          <div>
+            <div class="w-10 h-10 rounded-2xl bg-[#FAF0E8] flex items-center justify-center text-[#C5A059] mb-3">
+              <i data-lucide="upload" class="w-5 h-5"></i>
+            </div>
+            <h3 class="font-serif font-bold text-base text-[#3E2723]">Pulihkan Data (Impor JSON)</h3>
+            <p class="text-xs text-[#7D5F56] mt-1">
+              Muat kembali file JSON cadangan yang pernah Anda simpan untuk memulihkan seluruh data planner.
+            </p>
+          </div>
+          <label class="w-full py-2.5 rounded-xl bg-white border border-[#C5A059] text-[#5A3E36] text-xs font-semibold hover:bg-[#FAF0E8] transition-colors flex items-center justify-center gap-2 cursor-pointer">
+            <i data-lucide="file-up" class="w-4 h-4 text-[#C5A059]"></i> Pilih File JSON
+            <input type="file" accept=".json" onchange="handleJsonImport(event)" class="hidden">
+          </label>
+        </div>
+
+      </div>
+
+      <div class="glass-card rounded-3xl p-5 shadow-subtle border border-[#F1DFDA] space-y-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-[#FAF0E8] flex items-center justify-center text-[#C5A059]">
+            <i data-lucide="printer" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-serif font-bold text-base text-[#3E2723]">Cetak Fisik & Ekspor PDF</h3>
+            <p class="text-xs text-[#7D5F56]">Layout khusus rapi untuk dibagikan ke panitia keluarga atau Wedding Organizer.</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+          <button onclick="triggerPrint('rundown')" class="p-3 rounded-2xl bg-[#FAF4F0] hover:bg-[#E8C5C8]/40 border border-[#F1DFDA] text-left transition-colors flex items-center justify-between">
+            <span class="font-semibold text-[#3E2723]">Cetak Rundown Hari-H</span>
+            <i data-lucide="printer" class="w-4 h-4 text-[#874E4A]"></i>
+          </button>
+          <button onclick="triggerPrint('budget')" class="p-3 rounded-2xl bg-[#FAF4F0] hover:bg-[#E8C5C8]/40 border border-[#F1DFDA] text-left transition-colors flex items-center justify-between">
+            <span class="font-semibold text-[#3E2723]">Cetak Laporan Anggaran</span>
+            <i data-lucide="printer" class="w-4 h-4 text-[#874E4A]"></i>
+          </button>
+          <button onclick="triggerPrint('timeline')" class="p-3 rounded-2xl bg-[#FAF4F0] hover:bg-[#E8C5C8]/40 border border-[#F1DFDA] text-left transition-colors flex items-center justify-between">
+            <span class="font-semibold text-[#3E2723]">Cetak Checklist Tugas</span>
+            <i data-lucide="printer" class="w-4 h-4 text-[#874E4A]"></i>
+          </button>
+          <button onclick="triggerPrint('vendor')" class="p-3 rounded-2xl bg-[#FAF4F0] hover:bg-[#E8C5C8]/40 border border-[#F1DFDA] text-left transition-colors flex items-center justify-between">
+            <span class="font-semibold text-[#3E2723]">Cetak Data Vendor & Kontrak</span>
+            <i data-lucide="printer" class="w-4 h-4 text-[#874E4A]"></i>
+          </button>
+          <button onclick="triggerPrint('guests')" class="p-3 rounded-2xl bg-[#FAF4F0] hover:bg-[#E8C5C8]/40 border border-[#F1DFDA] text-left transition-colors flex items-center justify-between">
+            <span class="font-semibold text-[#3E2723]">Cetak Guest List & Meja</span>
+            <i data-lucide="printer" class="w-4 h-4 text-[#874E4A]"></i>
+          </button>
+          <button onclick="triggerPrint('seserahan')" class="p-3 rounded-2xl bg-[#FAF4F0] hover:bg-[#E8C5C8]/40 border border-[#F1DFDA] text-left transition-colors flex items-center justify-between">
+            <span class="font-semibold text-[#3E2723]">Cetak Kotak Seserahan</span>
+            <i data-lucide="printer" class="w-4 h-4 text-[#874E4A]"></i>
+          </button>
+        </div>
+
+        <button onclick="triggerPrint('all')" class="w-full py-3 rounded-2xl bg-gradient-to-r from-[#DFB967] to-[#C5A059] text-white font-bold text-xs shadow-gold hover:opacity-90 transition-all flex items-center justify-center gap-2">
+          <i data-lucide="layers" class="w-4 h-4"></i> Cetak Bundel Lengkap Semua Dokumen
+        </button>
+      </div>
+
+      <div class="space-y-3 pt-2">
+        <div class="flex items-center gap-2">
+          <i data-lucide="shield-alert" class="w-4 h-4 text-[#874E4A]"></i>
+          <h4 class="font-serif font-bold text-sm text-[#3E2723]">Manajemen Data & Reset Aplikasi</h4>
+        </div>
+
+        <div class="p-4 rounded-3xl bg-white border border-[#E8C5C8] shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-[#B57900] flex-shrink-0 mt-0.5">
+              <i data-lucide="sparkles" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <span class="font-bold text-[#3E2723] text-sm block">Mulai Pernikahan Baru (Bersihkan Semua Data)</span>
+              <span class="text-[#7D5F56] text-[11px] block mt-0.5 leading-relaxed">
+                Hapus semua data contoh (Sarah & Rizky, 14 tamu, vendor, seserahan) agar aplikasi <strong>100% bersih & siap diisi</strong> untuk pernikahan Anda sendiri.
+              </span>
+            </div>
+          </div>
+          <button onclick="openCleanResetModal()" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#DFB967] to-[#C5A059] text-white font-bold text-xs shadow-gold hover:opacity-90 transition-all flex items-center justify-center gap-1.5 flex-shrink-0">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Mulai Lembar Bersih
+          </button>
+        </div>
+
+        <div class="p-4 rounded-3xl bg-[#FAF6F2] border border-[#F1DFDA] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-[#FAF0E8] border border-[#E8C5C8] flex items-center justify-center text-[#874E4A] flex-shrink-0 mt-0.5">
+              <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <span class="font-bold text-[#3E2723] block">Muat Ulang Data Contoh Demo (Sarah & Rizky)</span>
+              <span class="text-stone-500 text-[11px] block mt-0.5">
+                Mengisi kembali aplikasi dengan data simulasi lengkap untuk melihat inspirasi tata letak dan perhitungan.
+              </span>
+            </div>
+          </div>
+          <button onclick="handleRestoreDemoData()" class="w-full sm:w-auto px-3.5 py-2 rounded-xl bg-white border border-[#E8C5C8] text-[#874E4A] font-semibold hover:bg-[#FAF0E8] transition-colors flex-shrink-0">
+            Muat Data Demo
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+    <section id="view-more" class="tab-view px-5 space-y-4">
+      <div>
+        <span class="text-[10px] font-bold tracking-widest uppercase text-[#C5A059]">Menu Navigasi</span>
+        <h2 class="font-serif font-bold text-2xl text-[#3E2723]">Layanan & Pengaturan</h2>
+      </div>
+
+      <div class="glass-card rounded-3xl p-3 shadow-subtle border border-[#F1DFDA] divide-y divide-[#F5E8E2] text-xs">
+        <div onclick="openEditProfileModal()" class="py-3 px-2 flex items-center justify-between cursor-pointer hover:bg-[#FAF0E8]/50 rounded-xl transition-colors">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-[#FAF0E8] flex items-center justify-center text-[#874E4A] overflow-hidden border border-[#E8C5C8] shadow-sm flex-shrink-0">
+              <img id="more-couple-avatar" src="assets/wedding_rings.jpg" alt="Foto Pasangan" class="w-full h-full object-cover">
+            </div>
+            <div>
+              <span id="more-couple-title" class="font-semibold text-[#3E2723] block">Profil Calon Pengantin</span>
+              <span class="text-[10px] text-[#7D5F56]">Nama, tanggal, lokasi, foto & plafon budget</span>
+            </div>
+          </div>
+          <i data-lucide="chevron-right" class="w-4 h-4 text-stone-400"></i>
+        </div>
+
+        <div onclick="switchTab('seserahan')" class="py-3 px-2 flex items-center justify-between cursor-pointer hover:bg-[#FAF0E8]/50 rounded-xl transition-colors">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-xl bg-[#FAF0E8] flex items-center justify-center text-[#874E4A]">
+              <i data-lucide="gift" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <span class="font-semibold text-[#3E2723] block">Seserahan & Hantaran Pengantin</span>
+              <span class="text-[10px] text-[#7D5F56]">Daftar kotak, belanja barang, status hias & PIC</span>
+            </div>
+          </div>
+          <i data-lucide="chevron-right" class="w-4 h-4 text-stone-400"></i>
+        </div>
+
+        <div onclick="switchTab('rundown')" class="py-3 px-2 flex items-center justify-between cursor-pointer hover:bg-[#FAF0E8]/50 rounded-xl transition-colors">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-xl bg-[#FAF0E8] flex items-center justify-center text-[#C5A059]">
+              <i data-lucide="clock" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <span class="font-semibold text-[#3E2723] block">Rundown Hari-H & Kontak Darurat</span>
+              <span class="text-[10px] text-[#7D5F56]">Jadwal detail menit per menit & nomor PIC</span>
+            </div>
+          </div>
+          <i data-lucide="chevron-right" class="w-4 h-4 text-stone-400"></i>
+        </div>
+
+        <div onclick="switchTab('backup')" class="py-3 px-2 flex items-center justify-between cursor-pointer hover:bg-[#FAF0E8]/50 rounded-xl transition-colors">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-xl bg-[#FAF0E8] flex items-center justify-center text-[#874E4A]">
+              <i data-lucide="download-cloud" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <span class="font-semibold text-[#3E2723] block">Backup, Restore & Cetak Fisik</span>
+              <span class="text-[10px] text-[#7D5F56]">Ekspor file JSON & cetak dokumen WO</span>
+            </div>
+          </div>
+          <i data-lucide="chevron-right" class="w-4 h-4 text-stone-400"></i>
+        </div>
+
+        <div onclick="showPwaInstallGuide()" class="py-3 px-2 flex items-center justify-between cursor-pointer hover:bg-[#FAF0E8]/50 rounded-xl transition-colors">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-xl bg-[#FAF0E8] flex items-center justify-center text-[#C5A059]">
+              <i data-lucide="smartphone" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <span class="font-semibold text-[#3E2723] block">Install PWA (Add to Home Screen)</span>
+              <span class="text-[10px] text-[#7D5F56]">Gunakan aplikasi seperti native app offline</span>
+            </div>
+          </div>
+          <i data-lucide="chevron-right" class="w-4 h-4 text-stone-400"></i>
+        </div>
+
+        <div onclick="openCleanResetModal()" class="py-3 px-2 flex items-center justify-between cursor-pointer hover:bg-red-50/60 rounded-xl transition-colors">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-[#B57900]">
+              <i data-lucide="sparkles" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <span class="font-semibold text-[#874E4A] block">Mulai Pernikahan Baru (Reset Bersih)</span>
+              <span class="text-[10px] text-[#7D5F56]">Kosongkan seluruh data contoh untuk pernikahan Anda</span>
+            </div>
+          </div>
+          <i data-lucide="chevron-right" class="w-4 h-4 text-stone-400"></i>
+        </div>
+      </div>
+
+      <div class="text-center py-4 space-y-1">
+        <p class="font-serif font-bold text-sm text-[#5A3E36]">EternalBliss v1.0</p>
+        <p id="footer-couple-signature" class="text-[11px] text-[#7D5F56]">Designed with Love for Sarah & Rizky</p>
+      </div>
+    </section>
+
+  </main>
+
+  <nav id="bottom-nav" class="no-print">
+    <div class="w-full grid grid-cols-5 text-center items-center py-1">
+      
+      <a href="#home" class="tab-link active flex flex-col items-center py-1 text-[#7D5F56] transition-colors" data-tab="home">
+        <i data-lucide="home" class="w-5 h-5 mb-0.5"></i>
+        <span class="text-[10px]">Home</span>
+      </a>
+
+      <a href="#timeline" class="tab-link flex flex-col items-center py-1 text-[#7D5F56] transition-colors" data-tab="timeline">
+        <i data-lucide="calendar" class="w-5 h-5 mb-0.5"></i>
+        <span class="text-[10px]">Timeline</span>
+      </a>
+
+      <a href="#vendor" class="tab-link flex flex-col items-center py-1 text-[#7D5F56] transition-colors" data-tab="vendor">
+        <i data-lucide="store" class="w-5 h-5 mb-0.5"></i>
+        <span class="text-[10px]">Vendor</span>
+      </a>
+
+      <a href="#guests" class="tab-link flex flex-col items-center py-1 text-[#7D5F56] transition-colors" data-tab="guests">
+        <i data-lucide="users" class="w-5 h-5 mb-0.5"></i>
+        <span class="text-[10px]">Guests</span>
+      </a>
+
+      <a href="#more" class="tab-link flex flex-col items-center py-1 text-[#7D5F56] transition-colors" data-tab="more">
+        <i data-lucide="settings" class="w-5 h-5 mb-0.5"></i>
+        <span class="text-[10px]">Settings</span>
+      </a>
+
+    </div>
+  </nav>
+
+  <div id="toast-container"></div>
+
+  <div id="modal-edit-profile" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+    <div class="modal-container w-full max-w-md bg-[#FFFDFC] rounded-3xl p-6 shadow-2xl border border-[#F1DFDA] space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-[#F1DFDA] pb-3">
+        <div class="flex items-center gap-2 text-[#3E2723]">
+          <i data-lucide="heart" class="w-5 h-5 text-[#874E4A] fill-[#E8C5C8]"></i>
+          <h3 class="font-serif font-bold text-lg">Profil Calon Pengantin</h3>
+        </div>
+        <button onclick="closeModal('modal-edit-profile')" class="p-1 rounded-full text-stone-400 hover:text-stone-700">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form onsubmit="saveProfileModal(event)" novalidate class="space-y-3.5 text-xs">
+        
+        <div class="p-3.5 rounded-2xl bg-gradient-to-br from-[#FFFDFB] to-[#FBF1EC] border border-[#E8C5C8] space-y-3 shadow-subtle">
+          <div class="flex items-center justify-between">
+            <label class="font-bold text-[#5A3E36] flex items-center gap-1.5 text-xs">
+              <i data-lucide="image" class="w-3.5 h-3.5 text-[#874E4A]"></i> Foto Pengantin / Pasangan
+            </label>
+            <span class="text-[10px] text-[#A4645F] font-semibold">Tampil di Beranda</span>
+          </div>
+
+          <div class="flex items-center gap-3.5">
+            
+            <div class="relative group cursor-pointer flex-shrink-0" onclick="document.getElementById('input-profile-photo-file').click()" title="Klik untuk upload foto">
+              <div class="w-18 h-18 sm:w-20 sm:h-20 rounded-full p-1 bg-gradient-to-tr from-[#C5A059] via-[#FAF0E8] to-[#DFB967] shadow-gold overflow-hidden">
+                <img id="preview-profile-photo" src="assets/wedding_rings.jpg" alt="Preview Foto" class="w-full h-full object-cover rounded-full">
+              </div>
+              <div class="absolute inset-0 bg-black/45 rounded-full flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-white text-[9px] font-semibold">
+                <i data-lucide="camera" class="w-4 h-4 mb-0.5"></i>
+                <span>Ganti</span>
+              </div>
+              <div class="absolute bottom-0 right-0 p-1 bg-[#874E4A] text-white rounded-full shadow-md border-2 border-white">
+                <i data-lucide="plus" class="w-3 h-3"></i>
+              </div>
+            </div>
+
+            <div class="flex-1 space-y-2">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                
+                <input type="file" id="input-profile-photo-file" accept="image/*" class="hidden" onchange="handleProfilePhotoUpload(event)">
+                
+                <button type="button" onclick="document.getElementById('input-profile-photo-file').click()" class="px-3 py-1.5 rounded-xl bg-[#874E4A] text-white font-semibold text-[11px] hover:bg-[#723F3C] transition-colors flex items-center gap-1.5 shadow-sm">
+                  <i data-lucide="upload" class="w-3.5 h-3.5"></i> Upload File
+                </button>
+
+                <button type="button" onclick="togglePhotoUrlInput()" class="px-2.5 py-1.5 rounded-xl bg-white border border-[#E8C5C8] text-[#5A3E36] font-medium text-[11px] hover:bg-[#FAF0E8] transition-colors flex items-center gap-1">
+                  <i data-lucide="link" class="w-3 h-3 text-[#C5A059]"></i> URL
+                </button>
+
+                <button type="button" onclick="resetProfilePhoto()" class="px-2 py-1.5 rounded-xl text-stone-400 hover:text-red-500 hover:bg-red-50 transition-colors text-[11px] flex items-center gap-1" title="Kembalikan ke default cincin">
+                  <i data-lucide="rotate-ccw" class="w-3 h-3"></i> Reset
+                </button>
+              </div>
+
+              <p class="text-[10px] text-[#7D5F56] leading-tight">
+                Pilih foto dari Galeri HP / Laptop (JPG, PNG, WebP) atau gunakan URL link.
+              </p>
+            </div>
+          </div>
+
+          <div id="photo-url-container" class="hidden pt-1">
+            <div class="flex items-center gap-1.5">
+              <input id="input-profile-photo-url" type="text" placeholder="https://contoh.com/foto-wedding.jpg" oninput="handleProfilePhotoUrlChange(this.value)" class="flex-1 px-3 py-1.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723] focus:border-[#C5A059] text-[11px]">
+              <button type="button" onclick="togglePhotoUrlInput()" class="p-1.5 text-stone-400 hover:text-stone-600 rounded-lg">
+                <i data-lucide="x" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="pt-2 border-t border-[#F1DFDA]/80">
+            <span class="text-[10px] text-[#7D5F56] font-semibold block mb-1.5">Preset Foto Cepat:</span>
+            <div class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
+              <button type="button" onclick="setProfilePhotoPreset('assets/wedding_rings.jpg')" class="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white border border-[#E8C5C8] hover:border-[#874E4A] hover:bg-[#FAF0E8] text-[10px] text-[#5A3E36] font-medium flex-shrink-0 transition-colors shadow-2xs">
+                💍 Cincin Emas
+              </button>
+              <button type="button" onclick="setProfilePhotoPreset('https://images.unsplash.com/photo-1519741497674-611481863552?w=400&auto=format&fit=crop&q=80')" class="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white border border-[#E8C5C8] hover:border-[#874E4A] hover:bg-[#FAF0E8] text-[10px] text-[#5A3E36] font-medium flex-shrink-0 transition-colors shadow-2xs">
+                💐 Prewedding Romantis
+              </button>
+              <button type="button" onclick="setProfilePhotoPreset('https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=400&auto=format&fit=crop&q=80')" class="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white border border-[#E8C5C8] hover:border-[#874E4A] hover:bg-[#FAF0E8] text-[10px] text-[#5A3E36] font-medium flex-shrink-0 transition-colors shadow-2xs">
+                ✨ Resepsi Glamour
+              </button>
+              <button type="button" onclick="setProfilePhotoPreset('https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=400&auto=format&fit=crop&q=80')" class="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white border border-[#E8C5C8] hover:border-[#874E4A] hover:bg-[#FAF0E8] text-[10px] text-[#5A3E36] font-medium flex-shrink-0 transition-colors shadow-2xs">
+                🕊️ Tradisional Nuansa
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-[#5A3E36] mb-1">Nama Mempelai Wanita</label>
+          <input id="input-bride-name" type="text" required class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723] focus:border-[#C5A059]">
+        </div>
+
+        <div>
+          <label class="block font-semibold text-[#5A3E36] mb-1">Nama Mempelai Pria</label>
+          <input id="input-groom-name" type="text" required class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723] focus:border-[#C5A059]">
+        </div>
+
+        <div>
+          <label class="block font-semibold text-[#5A3E36] mb-1">Tanggal & Waktu Akad / Hari H</label>
+          <input id="input-wedding-date" type="datetime-local" required class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723] focus:border-[#C5A059]">
+        </div>
+
+        <div>
+          <label class="block font-semibold text-[#5A3E36] mb-1">Lokasi / Ballroom Pernikahan</label>
+          <input id="input-wedding-venue" type="text" required class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723] focus:border-[#C5A059]">
+        </div>
+
+        <div>
+          <label class="block font-semibold text-[#5A3E36] mb-1">Kota Pelaksanaan</label>
+          <input id="input-wedding-city" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723] focus:border-[#C5A059]">
+        </div>
+
+        <div>
+          <label class="block font-semibold text-[#5A3E36] mb-1">Plafon Anggaran Maksimal (Total Budget Rp)</label>
+          <input id="input-total-budget" type="number" step="500000" required class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723] focus:border-[#C5A059]">
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-3 border-t border-[#F1DFDA]">
+          <button type="button" onclick="closeModal('modal-edit-profile')" class="px-4 py-2 rounded-xl text-stone-500 font-semibold hover:bg-stone-100">Batal</button>
+          <button type="submit" onclick="saveProfileModal(event)" class="px-5 py-2 rounded-xl bg-[#874E4A] text-white font-semibold hover:bg-[#723F3C] shadow-rose">Simpan Perubahan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="modal-expense" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+    <div class="modal-container w-full max-w-md bg-[#FFFDFC] rounded-3xl p-6 shadow-2xl border border-[#F1DFDA] space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-[#F1DFDA] pb-3">
+        <h3 id="form-expense-title" class="font-serif font-bold text-lg text-[#3E2723]">Tambah Pos Pengeluaran</h3>
+        <button onclick="closeModal('modal-expense')" class="p-1 rounded-full text-stone-400 hover:text-stone-700">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form onsubmit="saveExpenseModal(event)" novalidate class="space-y-3 text-xs">
+        <div>
+          <label class="block font-semibold text-[#5A3E36] mb-1">Nama Item Pengeluaran</label>
+          <input id="input-exp-name" type="text" required placeholder="Contoh: Katering 500 Pax, Sewa Gedung, dll." class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723]">
+        </div>
+
+        <div>
+          <label class="block font-semibold text-[#5A3E36] mb-1">Kategori Pos</label>
+          <select id="input-exp-category" class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723]">
+            <option value="vendor">Vendor Utama (Gedung, Katering, MUA, Dekor, WO, dll)</option>
+            <option value="bawaan">Barang Bawaan (Seserahan, Mahar, Cincin, Spa)</option>
+            <option value="operasional">Operasional & Lainnya (Undangan, Souvenir, KUA, Hotel)</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-[#5A3E36] mb-1">Estimasi Biaya (Rp)</label>
+            <input id="input-exp-est" type="number" min="0" step="any" placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723]">
+          </div>
+          <div>
+            <label class="block font-semibold text-[#5A3E36] mb-1">Biaya Riil Kontrak (Rp)</label>
+            <input id="input-exp-real" type="number" min="0" step="any" required placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723]">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-[#5A3E36] mb-1">DP yang Dibayar (Rp)</label>
+            <input id="input-exp-dp" type="number" min="0" step="any" placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723]">
+          </div>
+          <div>
+            <label class="block font-semibold text-[#5A3E36] mb-1">Status Pembayaran</label>
+            <select id="input-exp-status" class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723]">
+              <option value="Belum Bayar">Belum Bayar</option>
+              <option value="DP">DP</option>
+              <option value="Lunas">Lunas</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-[#5A3E36] mb-1">Catatan Tambahan (Opsional)</label>
+          <input id="input-exp-notes" type="text" placeholder="Detail paket, termin berikutnya, dll." class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723]">
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-3 border-t border-[#F1DFDA]">
+          <button type="button" onclick="closeModal('modal-expense')" class="px-4 py-2 rounded-xl text-stone-500 font-semibold hover:bg-stone-100">Batal</button>
+          <button type="submit" onclick="saveExpenseModal(event)" class="px-5 py-2 rounded-xl bg-[#874E4A] text-white font-semibold hover:bg-[#723F3C] shadow-rose">Simpan Item</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="modal-task" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+    <div class="modal-container w-full max-w-md bg-[#FFFDFC] rounded-3xl p-6 shadow-2xl border border-[#F1DFDA] space-y-4">
+      <div class="flex items-center justify-between border-b border-[#F1DFDA] pb-3">
+        <h3 class="font-serif font-bold text-lg text-[#3E2723]">Tambah Tugas Baru</h3>
+        <button onclick="closeModal('modal-task')" class="p-1 rounded-full text-stone-400 hover:text-stone-700">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form onsubmit="saveTaskModal(event)" novalidate class="space-y-3.5 text-xs">
+        <div>
+          <label class="block font-semibold text-[#5A3E36] mb-1">Nama Tugas / Aktivitas</label>
+          <input id="input-task-title" type="text" required placeholder="Contoh: Booking seragam keluarga, Pesan kue..." class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723]">
+        </div>
+
+        <div>
+          <label class="block font-semibold text-[#5A3E36] mb-1">Fase Waktu Persiapan</label>
+          <select id="input-task-phase" class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723]">
+            <option value="h12">H-12 Bulan</option>
+            <option value="h6">H-6 Bulan</option>
+            <option value="h3">H-3 Bulan</option>
+            <option value="h1m">H-1 Bulan</option>
+            <option value="h1w">H-1 Minggu</option>
+            <option value="h0">Hari H</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-[#5A3E36] mb-1">Catatan / Keterangan (Opsional)</label>
+          <input id="input-task-note" type="text" placeholder="Detail kontak atau deadline tugas" class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723]">
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-3 border-t border-[#F1DFDA]">
+          <button type="button" onclick="closeModal('modal-task')" class="px-4 py-2 rounded-xl text-stone-500 font-semibold hover:bg-stone-100">Batal</button>
+          <button type="submit" onclick="saveTaskModal(event)" class="px-5 py-2 rounded-xl bg-[#874E4A] text-white font-semibold hover:bg-[#723F3C] shadow-rose">Simpan Tugas</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="modal-vendor" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+    <div class="modal-container w-full max-w-md bg-[#FFFDFC] rounded-3xl p-6 shadow-2xl border border-[#F1DFDA] space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-[#F1DFDA] pb-3">
+        <h3 id="form-vendor-title" class="font-serif font-bold text-lg text-[#3E2723]">Tambah Vendor Baru</h3>
+        <button onclick="closeModal('modal-vendor')" class="p-1 rounded-full text-stone-400 hover:text-stone-700">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form onsubmit="saveVendorModal(event)" novalidate class="space-y-3 text-xs">
+        <div>
+          <label class="block font-semibold text-[#5A3E36] mb-1">Nama Vendor</label>
+          <input id="input-vendor-name" type="text" required placeholder="Contoh: Plataran Ballroom, Puspa Catering" class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723]">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-[#5A3E36] mb-1">Kategori Vendor</label>
+            <input id="input-vendor-category" type="text" required placeholder="Katering, Venue, MUA..." class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723]">
+          </div>
+          <div>
+            <label class="block font-semibold text-[#5A3E36] mb-1">Nama PIC Vendor</label>
+            <input id="input-vendor-pic" type="text" placeholder="Ibu Ratna, Mas Dimas..." class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723]">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-[#5A3E36] mb-1">Nomor WhatsApp PIC (Contoh: 628123456789)</label>
+          <input id="input-vendor-phone" type="tel" placeholder="6281234567890" class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723]">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-[#5A3E36] mb-1">Nilai Kontrak (Rp)</label>
+            <input id="input-vendor-contract" type="number" min="0" step="any" placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723]">
+          </div>
+          <div>
+            <label class="block font-semibold text-[#5A3E36] mb-1">Jumlah DP (Rp)</label>
+            <input id="input-vendor-dp" type="number" min="0" step="any" placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723]">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-[#5A3E36] mb-1">Status Kerjasama</label>
+          <select id="input-vendor-status" class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723]">
+            <option value="Mencari">Mencari / Penawaran</option>
+            <option value="Booked">Booked (Terkonfirmasi)</option>
+            <option value="Lunas">Lunas</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-[#5A3E36] mb-1">Catatan Paket / Perjanjian</label>
+          <textarea id="input-vendor-notes" rows="2" placeholder="Item fasilitas, waktu kedatangan tim, link drive..." class="w-full px-3.5 py-2 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723]"></textarea>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-3 border-t border-[#F1DFDA]">
+          <button type="button" onclick="closeModal('modal-vendor')" class="px-4 py-2 rounded-xl text-stone-500 font-semibold hover:bg-stone-100">Batal</button>
+          <button type="submit" onclick="saveVendorModal(event)" class="px-5 py-2 rounded-xl bg-[#874E4A] text-white font-semibold hover:bg-[#723F3C] shadow-rose">Simpan Vendor</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="modal-guest" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+    <div class="modal-container w-full max-w-md bg-[#FFFDFC] rounded-3xl p-6 shadow-2xl border border-[#F1DFDA] space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-[#F1DFDA] pb-3">
+        <h3 id="form-guest-title" class="font-serif font-bold text-lg text-[#3E2723]">Tambah Tamu Undangan</h3>
+        <button onclick="closeModal('modal-guest')" class="p-1 rounded-full text-stone-400 hover:text-stone-700">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form onsubmit="saveGuestModal(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-semibold text-[#5A3E36] mb-1">Nama Tamu / Gelar</label>
+          <input id="input-guest-name" type="text" required placeholder="Contoh: Bpk. H. Bambang & Keluarga" class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723]">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-[#5A3E36] mb-1">Kategori Tamu</label>
+            <select id="input-guest-category" class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723]">
+              <option value="VIP">VIP</option>
+              <option value="Keluarga">Keluarga</option>
+              <option value="Sahabat">Sahabat</option>
+              <option value="Teman Kantor">Teman Kantor</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-semibold text-[#5A3E36] mb-1">Jumlah Pax</label>
+            <input id="input-guest-pax" type="number" min="1" max="10" value="2" required class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723]">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-[#5A3E36] mb-1">Plotting Nomor Meja</label>
+            <input id="input-guest-table" type="text" placeholder="Meja VIP 01, Meja 03..." class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723]">
+          </div>
+          <div>
+            <label class="block font-semibold text-[#5A3E36] mb-1">Status RSVP</label>
+            <select id="input-guest-rsvp" class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723]">
+              <option value="Belum Konfirmasi">Belum Konfirmasi</option>
+              <option value="Hadir">Hadir</option>
+              <option value="Ragu-ragu">Ragu-ragu</option>
+              <option value="Berhalangan">Berhalangan</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-[#5A3E36] mb-1">Nomor WhatsApp Tamu</label>
+          <input id="input-guest-phone" type="tel" placeholder="6281234567890" class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723]">
+        </div>
+
+        <div class="flex items-center gap-2 pt-1">
+          <input type="checkbox" id="input-guest-sent" class="custom-checkbox">
+          <label for="input-guest-sent" class="font-medium text-[#5A3E36] cursor-pointer">Undangan fisik/digital sudah terkirim ke tamu ini</label>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-3 border-t border-[#F1DFDA]">
+          <button type="button" onclick="closeModal('modal-guest')" class="px-4 py-2 rounded-xl text-stone-500 font-semibold hover:bg-stone-100">Batal</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-[#874E4A] text-white font-semibold hover:bg-[#723F3C] shadow-rose">Simpan Tamu</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="modal-rundown" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+    <div class="modal-container w-full max-w-md bg-[#FFFDFC] rounded-3xl p-6 shadow-2xl border border-[#F1DFDA] space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-[#F1DFDA] pb-3">
+        <h3 id="form-rundown-title" class="font-serif font-bold text-lg text-[#3E2723]">Tambah Sesi Rundown</h3>
+        <button onclick="closeModal('modal-rundown')" class="p-1 rounded-full text-stone-400 hover:text-stone-700">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form onsubmit="saveRundownModal(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-semibold text-[#5A3E36] mb-1">Waktu Sesi (Contoh: 08:00 - 09:30)</label>
+          <input id="input-rundown-time" type="text" required placeholder="08:00 - 09:30" class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723]">
+        </div>
+
+        <div>
+          <label class="block font-semibold text-[#5A3E36] mb-1">Deskripsi Sesi Acara</label>
+          <input id="input-rundown-title" type="text" required placeholder="Contoh: Prosesi Ijab Qabul & Mahar" class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723]">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-[#5A3E36] mb-1">PIC (Penanggung Jawab)</label>
+            <input id="input-rundown-pic" type="text" required placeholder="Kak Dania (WO)" class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723]">
+          </div>
+          <div>
+            <label class="block font-semibold text-[#5A3E36] mb-1">No. HP / WA PIC</label>
+            <input id="input-rundown-phone" type="tel" placeholder="6281299887766" class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723]">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-[#5A3E36] mb-1">Catatan Tambahan & Petunjuk Teknis</label>
+          <textarea id="input-rundown-notes" rows="2" placeholder="Musik latar, posisi saksi, perlengkapan mic..." class="w-full px-3.5 py-2 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723]"></textarea>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-3 border-t border-[#F1DFDA]">
+          <button type="button" onclick="closeModal('modal-rundown')" class="px-4 py-2 rounded-xl text-stone-500 font-semibold hover:bg-stone-100">Batal</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-[#874E4A] text-white font-semibold hover:bg-[#723F3C] shadow-rose">Simpan Agenda</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="modal-pwa-guide" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+    <div class="modal-container w-full max-w-sm bg-[#FFFDFC] rounded-3xl p-6 shadow-2xl border border-[#F1DFDA] space-y-4 text-xs">
+      <div class="flex items-center justify-between border-b border-[#F1DFDA] pb-3">
+        <div class="flex items-center gap-2">
+          <img src="assets/app-icon.png" class="w-6 h-6 rounded-lg object-cover">
+          <h3 class="font-serif font-bold text-base text-[#3E2723]">Pasang di Layar Utama</h3>
+        </div>
+        <button onclick="closeModal('modal-pwa-guide')" class="p-1 rounded-full text-stone-400 hover:text-stone-700">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-[#5A3E36]">
+        <p class="font-medium">Untuk menggunakan EternalBliss seperti aplikasi mandiri:</p>
+        <div class="p-3 rounded-2xl bg-[#FAF0E8] space-y-2">
+          <p class="font-bold text-[#874E4A]">Di Google Chrome / Android:</p>
+          <p>Ketuk tombol menu <strong>titik tiga (⋮)</strong> di browser, lalu pilih <strong>"Tambahkan ke Layar Utama"</strong> (Install App).</p>
+        </div>
+        <div class="p-3 rounded-2xl bg-[#FAF0E8] space-y-2">
+          <p class="font-bold text-[#874E4A]">Di Safari / iPhone (iOS):</p>
+          <p>Ketuk tombol <strong>Share (Bagikan) <i data-lucide="share" class="w-3.5 h-3.5 inline"></i></strong> di bilah bawah Safari, lalu pilih <strong>"Add to Home Screen"</strong>.</p>
+        </div>
+      </div>
+
+      <button onclick="closeModal('modal-pwa-guide')" class="w-full py-2.5 rounded-xl bg-[#874E4A] text-white font-semibold shadow-rose hover:bg-[#723F3C]">
+        Mengerti
+      </button>
+    </div>
+  </div>
+
+  <div id="modal-table-detail" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+    <div class="modal-container w-full max-w-md bg-[#FFFDFC] rounded-3xl p-6 shadow-2xl border border-[#F1DFDA] space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-[#F1DFDA] pb-3">
+        <div>
+          <span id="detail-table-category" class="text-[10px] font-bold uppercase tracking-wider text-[#A4645F] bg-[#FAF0E8] px-2 py-0.5 rounded-md">VIP</span>
+          <h3 id="detail-table-title" class="font-serif font-bold text-lg text-[#3E2723] mt-1">Meja VIP 01</h3>
+        </div>
+        <button onclick="closeModal('modal-table-detail')" class="p-1 rounded-full text-stone-400 hover:text-stone-700">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3">
+        <div class="p-3 rounded-2xl bg-[#FAF2EC] flex items-center justify-between text-xs">
+          <span class="font-medium text-[#5A3E36]">Kapasitas Terisi:</span>
+          <span id="detail-table-capacity" class="font-bold text-[#874E4A]">7 dari 8 Kursi</span>
+        </div>
+
+        <div>
+          <h4 class="text-xs font-bold text-[#3E2723] mb-2 uppercase tracking-wider">Daftar Tamu di Meja Ini:</h4>
+          <div id="detail-table-guest-list" class="space-y-2">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-2 pt-3 border-t border-[#F1DFDA]">
+        <button type="button" onclick="closeModal('modal-table-detail')" class="w-full py-2.5 rounded-xl bg-[#874E4A] text-white text-xs font-semibold shadow-rose hover:bg-[#723F3C]">
+          Tutup
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-catering-calculator" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+    <div class="modal-container w-full max-w-lg bg-[#FFFDFC] rounded-3xl p-6 shadow-2xl border border-[#F1DFDA] space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-[#F1DFDA] pb-3">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-[#FAF0E8] flex items-center justify-center text-[#874E4A]">
+            <i data-lucide="utensils" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h3 class="font-serif font-bold text-base text-[#3E2723]">Kalkulator Katering Pernikahan RI</h3>
+            <p class="text-[11px] text-[#7D5F56]">Formula rasio Buffet & Gubukan tradisi resepsi Indonesia</p>
+          </div>
+        </div>
+        <button onclick="closeModal('modal-catering-calculator')" class="p-1 rounded-full text-stone-400 hover:text-stone-700">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="space-y-4 text-xs">
+        
+        <div class="grid grid-cols-2 gap-3 bg-[#FAF2EC] p-3.5 rounded-2xl">
+          <div>
+            <label class="block font-semibold text-[#5A3E36] mb-1">Total Undangan Fisik/Web</label>
+            <input id="input-cat-invites" type="number" value="250" oninput="calculateIndoCatering()" class="w-full px-3 py-2 rounded-xl border border-[#E8C5C8] text-[#3E2723] font-bold outline-none">
+            <span class="text-[10px] text-[#7D5F56] mt-0.5 block">1 undangan ≈ 2 pax tamu</span>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-[#5A3E36] mb-1">Estimasi Total Pax Tamu</label>
+            <input id="input-cat-pax" type="number" value="500" oninput="calculateIndoCatering()" class="w-full px-3 py-2 rounded-xl border border-[#E8C5C8] text-[#874E4A] font-bold outline-none">
+            <span class="text-[10px] text-[#7D5F56] mt-0.5 block">Total orang yang hadir</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-[#5A3E36] mb-1">Rasio Buffet (Prasmanan)</label>
+            <select id="select-cat-buffet-ratio" onchange="calculateIndoCatering()" class="w-full px-3 py-2 rounded-xl border border-[#E8C5C8] text-[#3E2723] font-medium outline-none">
+              <option value="0.4">40% dari Total Pax (Standar Hemat)</option>
+              <option value="0.5" selected>50% dari Total Pax (Rekomendasi Aman)</option>
+              <option value="0.6">60% dari Total Pax (Sangat Aman)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-[#5A3E36] mb-1">Rasio Gubukan (Stalls)</label>
+            <select id="select-cat-stall-multiplier" onchange="calculateIndoCatering()" class="w-full px-3 py-2 rounded-xl border border-[#E8C5C8] text-[#3E2723] font-medium outline-none">
+              <option value="4">4x Total Pax Tamu</option>
+              <option value="4.5" selected>4.5x Total Pax Tamu (Ideal)</option>
+              <option value="5">5x Total Pax Tamu (Mewah & Berlimpah)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 text-center">
+          <div class="p-3 rounded-2xl bg-[#EBF7EE] border border-[#D1EED7]">
+            <span class="text-[10px] uppercase font-bold text-[#237A3B] block">Porsi Prasmanan Utama</span>
+            <span id="calc-buffet-result" class="font-serif font-bold text-lg text-[#237A3B] mt-0.5 block">250 Porsi</span>
+            <span class="text-[10px] text-stone-500">Nasi, lauk, sup & dessert</span>
+          </div>
+
+          <div class="p-3 rounded-2xl bg-[#FEF7EA] border border-[#FCE4B8]">
+            <span class="text-[10px] uppercase font-bold text-[#B57900] block">Total Porsi Gubukan</span>
+            <span id="calc-stall-result" class="font-serif font-bold text-lg text-[#B57900] mt-0.5 block">2.250 Porsi</span>
+            <span class="text-[10px] text-stone-500">Terbagi ke 5 stall favorit</span>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <span class="font-bold text-[#3E2723] block text-xs uppercase tracking-wider">Rekomendasi Pembagian Menu Gubukan Populer:</span>
+          <div class="space-y-1.5 bg-[#FAF4F0] p-3 rounded-2xl border border-[#F1DFDA]">
+            <div class="flex items-center justify-between text-xs py-0.5">
+              <span class="font-medium text-[#3E2723]">🍲 Zuppa Soup (25%)</span>
+              <span id="stall-zuppa-qty" class="font-bold text-[#874E4A]">550 Porsi</span>
+            </div>
+            <div class="flex items-center justify-between text-xs py-0.5">
+              <span class="font-medium text-[#3E2723]">🍢 Sate Padang / Ayam (25%)</span>
+              <span id="stall-sate-qty" class="font-bold text-[#874E4A]">550 Porsi</span>
+            </div>
+            <div class="flex items-center justify-between text-xs py-0.5">
+              <span class="font-medium text-[#3E2723]">🥩 Roast Beef / Kambing Guling (20%)</span>
+              <span id="stall-beef-qty" class="font-bold text-[#874E4A]">450 Porsi</span>
+            </div>
+            <div class="flex items-center justify-between text-xs py-0.5">
+              <span class="font-medium text-[#3E2723]">🥟 Siomay Bandung / Dimsum (15%)</span>
+              <span id="stall-siomay-qty" class="font-bold text-[#874E4A]">350 Porsi</span>
+            </div>
+            <div class="flex items-center justify-between text-xs py-0.5">
+              <span class="font-medium text-[#3E2723]">🍨 Es Puter & Puding Buah (15%)</span>
+              <span id="stall-dessert-qty" class="font-bold text-[#874E4A]">350 Porsi</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-gradient-to-r from-[#FAF0E8] to-[#FFF9F5] border border-[#C5A059] flex items-center justify-between">
+          <div>
+            <span class="text-[10px] uppercase font-bold text-[#7D5F56] block">Estimasi Anggaran Katering</span>
+            <span id="calc-catering-cost" class="font-serif font-bold text-base text-[#3E2723]">Rp 75.000.000</span>
+          </div>
+          <button onclick="applyCateringToBudget()" class="px-3.5 py-2 rounded-xl bg-[#874E4A] text-white text-xs font-semibold shadow-rose hover:bg-[#723F3C] transition-all flex items-center gap-1.5">
+            <i data-lucide="check" class="w-3.5 h-3.5"></i> Terapkan ke Budget
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-seserahan" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+    <div class="modal-container w-full max-w-md bg-[#FFFDFC] rounded-3xl p-6 shadow-2xl border border-[#F1DFDA] space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-[#F1DFDA] pb-3">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-[#FAF0E8] flex items-center justify-center text-[#874E4A]">
+            <i data-lucide="gift" class="w-4 h-4"></i>
+          </div>
+          <h3 id="form-seserahan-title" class="font-serif font-bold text-lg text-[#3E2723]">Tambah Kotak Seserahan</h3>
+        </div>
+        <button onclick="closeModal('modal-seserahan')" class="p-1 rounded-full text-stone-400 hover:text-stone-700">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form onsubmit="saveSeserahanModal(event)" class="space-y-3 text-xs">
+        <div class="grid grid-cols-3 gap-2.5">
+          <div>
+            <label class="block font-semibold text-[#5A3E36] mb-1">No. Kotak</label>
+            <input id="input-ses-number" type="number" min="1" required class="w-full px-3 py-2 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723] font-bold">
+          </div>
+          <div class="col-span-2">
+            <label class="block font-semibold text-[#5A3E36] mb-1">Arah Penerima</label>
+            <select id="input-ses-penerima" class="w-full px-3 py-2 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723]">
+              <option value="Mempelai Wanita">🌸 Untuk Mempelai Wanita</option>
+              <option value="Mempelai Pria">👔 Balasan Mempelai Pria</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-[#5A3E36] mb-1">Tema / Nama Kotak</label>
+          <input id="input-ses-title" type="text" required placeholder="Contoh: Perlengkapan Ibadah (Mukena Sutra & Al-Qur'an)" class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723]">
+        </div>
+
+        <div>
+          <label class="block font-semibold text-[#5A3E36] mb-1">Kategori Barang</label>
+          <select id="input-ses-category" class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723]">
+            <option value="Perlengkapan Ibadah">Perlengkapan Ibadah</option>
+            <option value="Skincare & Kosmetik">Skincare & Kosmetik</option>
+            <option value="Busana & Kain Adat">Busana & Kain Adat</option>
+            <option value="Tas & Sepatu">Tas & Sepatu</option>
+            <option value="Perhiasan & Emas">Perhiasan & Emas</option>
+            <option value="Parfum & Body Care">Parfum & Body Care</option>
+            <option value="Kue Tradisional & Buah">Kue Tradisional & Buah</option>
+            <option value="Seserahan Balasan Pria">Seserahan Balasan Pria</option>
+            <option value="Lainnya">Lainnya</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-[#5A3E36] mb-1">Daftar Isi Barang (Pisahkan dengan koma atau baris baru)</label>
+          <textarea id="input-ses-items" rows="3" required placeholder="Contoh: Mukena Silk Zara Blush, Sajadah Turki, Al-Qur'an Emas, Tasbih Kristal" class="w-full px-3.5 py-2 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723]"></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-[#5A3E36] mb-1">Plafon Budget (Rp)</label>
+            <input id="input-ses-budget" type="number" min="0" step="any" placeholder="1500000" class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723]">
+          </div>
+          <div>
+            <label class="block font-semibold text-[#5A3E36] mb-1">Biaya Belanja Riil (Rp)</label>
+            <input id="input-ses-actual" type="number" min="0" step="any" required placeholder="1450000" class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#874E4A] font-bold">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-[#5A3E36] mb-1">Biaya Jasa Hias (Rp)</label>
+            <input id="input-ses-jasa" type="number" min="0" step="any" placeholder="150000" class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723]">
+          </div>
+          <div>
+            <label class="block font-semibold text-[#5A3E36] mb-1">Status Kotak</label>
+            <select id="input-ses-status" class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723] font-semibold">
+              <option value="belum_dibeli">Belum Dibeli</option>
+              <option value="sudah_dibeli">Sudah Dibeli</option>
+              <option value="sedang_dihias">Sedang Dihias</option>
+              <option value="siap">Siap Diserahkan</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-[#5A3E36] mb-1">PIC Pembawa Kotak</label>
+            <input id="input-ses-pic" type="text" placeholder="Kak Dimas (Keluarga Pria)" class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723]">
+          </div>
+          <div>
+            <label class="block font-semibold text-[#5A3E36] mb-1">Vendor Jasa Hias</label>
+            <input id="input-ses-vendor" type="text" placeholder="Rosewood Studio" class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723]">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-[#5A3E36] mb-1">Catatan Dekorasi / Konsep Hiasan</label>
+          <input id="input-ses-notes" type="text" placeholder="Kotak akrilik hexagonal, pita champagne gold, bunga mawar blush" class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8C5C8] outline-none text-[#3E2723]">
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-3 border-t border-[#F1DFDA]">
+          <button type="button" onclick="closeModal('modal-seserahan')" class="px-4 py-2 rounded-xl text-stone-500 font-semibold hover:bg-stone-100">Batal</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-[#874E4A] text-white font-semibold hover:bg-[#723F3C] shadow-rose">Simpan Kotak</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="modal-print-preview" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/60 backdrop-blur-md">
+    <div class="modal-container w-full max-w-3xl bg-[#FFFDFC] rounded-3xl p-5 sm:p-6 shadow-2xl border border-[#F1DFDA] max-h-[92vh] flex flex-col">
+      
+      <div class="flex items-center justify-between border-b border-[#F1DFDA] pb-3.5 flex-shrink-0">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#FAF0E8] to-[#FFF5ED] border border-[#E8C5C8] text-[#874E4A] flex items-center justify-center shadow-xs">
+            <i data-lucide="printer" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 id="print-preview-modal-title" class="font-serif font-bold text-base sm:text-lg text-[#3E2723]">Pratinjau Dokumen Cetak</h3>
+            <p class="text-[11px] text-[#7D5F56]">Dokumen resmi siap cetak printer atau simpan sebagai format PDF</p>
+          </div>
+        </div>
+        <button onclick="closeModal('modal-print-preview')" class="p-1.5 rounded-full text-stone-400 hover:text-stone-700 hover:bg-[#FAF0E8] transition-colors">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto p-3 sm:p-5 bg-[#FAF6F2] rounded-2xl border border-[#F1DFDA] my-3">
+        <div id="print-preview-sheet" class="bg-white p-5 sm:p-8 rounded-xl shadow-md border border-stone-200 text-[#222]">
+          
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between pt-2 border-t border-[#F1DFDA] flex-shrink-0">
+        <button type="button" onclick="closeModal('modal-print-preview')" class="px-4 py-2 rounded-xl text-stone-500 font-semibold hover:bg-stone-100 text-xs">
+          Tutup Pratinjau
+        </button>
+        <button type="button" onclick="executeSystemPrint()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#DFB967] to-[#C5A059] text-white font-bold text-xs shadow-gold hover:opacity-90 transition-opacity flex items-center gap-2">
+          <i data-lucide="printer" class="w-4 h-4"></i> Cetak / Simpan PDF Sekarang
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-clean-reset" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/60 backdrop-blur-md">
+    <div class="modal-container w-full max-w-md bg-[#FFFDFC] rounded-3xl p-5 sm:p-6 shadow-2xl border border-[#F1DFDA] max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-[#F1DFDA]">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-50 to-amber-100 border border-amber-200 text-[#C5A059] flex items-center justify-center shadow-xs">
+            <i data-lucide="sparkles" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-serif font-bold text-base sm:text-lg text-[#3E2723]">Mulai Pernikahan Baru</h3>
+            <p class="text-[11px] text-[#7D5F56]">Bersihkan data contoh untuk pernikahan Anda</p>
+          </div>
+        </div>
+        <button onclick="closeModal('modal-clean-reset')" class="p-1.5 rounded-full text-stone-400 hover:text-stone-700 hover:bg-[#FAF0E8] transition-colors">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="form-clean-reset" onsubmit="executeCleanReset(event)" class="mt-4 space-y-3.5 text-xs">
+        <div class="bg-[#FAF4F0] p-3 rounded-2xl border border-[#F1DFDA] text-[#7D5F56] space-y-1">
+          <p class="font-semibold text-[#5A3E36] flex items-center gap-1.5 text-xs">
+            <i data-lucide="info" class="w-3.5 h-3.5 text-[#C5A059]"></i> Format Bersih (Clean Slate)
+          </p>
+          <p class="text-[11px] leading-relaxed">
+            Semua data simulasi contoh (Sarah & Rizky, 14 tamu, vendor, anggaran, rundown, dan seserahan) akan <strong>dibersihkan</strong> sehingga Anda dapat mulai merencanakan pernikahan dari awal.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block font-semibold text-[#5A3E36] mb-1">Mempelai Wanita</label>
+            <input type="text" id="reset-bride-name" placeholder="Nama Panggilan" class="w-full px-3 py-2 rounded-xl border border-[#E8C5C8] focus:border-[#C5A059] outline-none bg-white">
+          </div>
+          <div>
+            <label class="block font-semibold text-[#5A3E36] mb-1">Mempelai Pria</label>
+            <input type="text" id="reset-groom-name" placeholder="Nama Panggilan" class="w-full px-3 py-2 rounded-xl border border-[#E8C5C8] focus:border-[#C5A059] outline-none bg-white">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-[#5A3E36] mb-1">Tanggal Pernikahan Anda</label>
+          <input type="date" id="reset-wedding-date" class="w-full px-3 py-2 rounded-xl border border-[#E8C5C8] focus:border-[#C5A059] outline-none bg-white">
+        </div>
+
+        <div>
+          <label class="block font-semibold text-[#5A3E36] mb-1">Lokasi / Gedung Pernikahan</label>
+          <input type="text" id="reset-wedding-venue" placeholder="Contoh: Hotel Mulia / Gedung Pernikahan" class="w-full px-3 py-2 rounded-xl border border-[#E8C5C8] focus:border-[#C5A059] outline-none bg-white">
+        </div>
+
+        <div>
+          <label class="block font-semibold text-[#5A3E36] mb-1">Target Plafon Anggaran (Opsional)</label>
+          <input type="number" id="reset-total-budget" placeholder="Contoh: 150000000" class="w-full px-3 py-2 rounded-xl border border-[#E8C5C8] focus:border-[#C5A059] outline-none bg-white">
+        </div>
+
+        <div class="pt-1">
+          <label class="flex items-start gap-2.5 cursor-pointer p-3 rounded-2xl bg-[#FAF6F2] border border-[#F1DFDA] hover:bg-[#FAF0E8] transition-colors">
+            <input type="checkbox" id="reset-keep-tasks" checked class="custom-checkbox mt-0.5">
+            <span class="text-[11px] text-[#5A3E36] font-medium leading-tight">
+              Sertakan panduan <strong>12 checklist milestone persiapan</strong> standar pernikahan (Sangat disarankan agar tidak bingung)
+            </span>
+          </label>
+        </div>
+
+        <div class="pt-2 space-y-2">
+          <button type="submit" class="w-full py-3 rounded-2xl bg-gradient-to-r from-[#DFB967] to-[#C5A059] text-white font-bold text-xs shadow-gold hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+            <i data-lucide="sparkles" class="w-4 h-4"></i> Mulai Pernikahan Bersih Sekarang
+          </button>
+          <button type="button" onclick="executeTotalWipeClean()" class="w-full py-2 rounded-xl text-red-600 hover:bg-red-50 font-semibold text-[11px] transition-colors">
+            Kosongkan Total 100% (Tanpa Isi Form Sekarang)
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="print-document-area"></div>
+
+  <canvas id="celebration-canvas"></canvas>
+
+  <script src="app.js"></script>
+</body>
+</html>
