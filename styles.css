@@ -490,6 +490,18 @@ body:not(.expanded-view-mode) #desktop-menu-links {
   border: 1.5px dashed #C4A59D;
 }
 
+#preview-profile-photo,
+#dash-couple-avatar,
+#more-couple-avatar {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: cover !important;
+  border-radius: 9999px !important;
+  display: block !important;
+}
+
 #print-document-area {
   display: none;
 }
